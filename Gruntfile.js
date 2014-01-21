@@ -12,7 +12,7 @@ module.exports = function (grunt) {
   var yeomanConfig = {
     app: 'src',
     demo: 'demo',
-    name: 'cropme',
+    name: 'typeahead',
     dist: 'dist',
   };
 

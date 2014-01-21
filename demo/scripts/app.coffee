@@ -1,5 +1,5 @@
 "use strict"
-angular.module("cropmeDemo", ["cropme", "ngRoute"]).config ($routeProvider) ->
+angular.module("demo", ["typeahead", "ngRoute"]).config ($routeProvider) ->
   $routeProvider.when("/",
     templateUrl: "views/main.html"
     controller: "MainCtrl"
