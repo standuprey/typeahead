@@ -12,13 +12,15 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", ($timeout) -
 	link: (scope, element, attributes) ->
 		$lis = $ul = currentEl = null
 		$timeout ->
-			$lis = element.find "li"
 			$ul = element.find "ul"
-			$lis.addClass "hide"
+			$ul.addClass "hide"
 			null
 		watchTerm = if scope.inputFromParent then "$parent.#{scope.inputFromParent}" else "term"
 		scope.$watch watchTerm, ->
-			return unless $lis
+			unless $lis
+				$lis = $ul.find "li"
+				$lis.addClass "hide"
+				$ul.removeClass "hide"
 			currentEl.className = "show" if currentEl
 			currentEl = null
 			term = if scope.inputFromParent then scope.$parent[scope.inputFromParent] else scope.term
