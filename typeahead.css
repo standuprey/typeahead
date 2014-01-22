@@ -1,0 +1,14 @@
+/* line 1, ../../styles/typeahead.scss */
+.show {
+  display: block;
+}
+
+/* line 2, ../../styles/typeahead.scss */
+.hide {
+  display: none;
+}
+
+/* line 3, ../../styles/typeahead.scss */
+.active {
+  background-color: #eee;
+}

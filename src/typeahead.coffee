@@ -1,25 +1,29 @@
 angular.module("typeahead", []).directive "typeahead", ["$timeout", ($timeout) ->
 
 	template: """
-	<div ng-keydown="keydown($event)"><input ng-model="term" type="text" autocomplete="off" /><div ng-transclude></div></div>
+	<div ng-keydown="keydown($event)"><input ng-hide="inputFromParent" ng-model="term" type="text" autocomplete="off" /><div ng-transclude></div></div>
 	"""
 	transclude: true
 	replace: true
 	restrict: "E"
-	scope: {}
+	scope: {
+		inputFromParent: "@?model"
+	}
 	link: (scope, element, attributes) ->
 		$lis = $ul = currentEl = null
 		$timeout ->
 			$lis = element.find "li"
 			$ul = element.find "ul"
-			$lis.addClass "show"
-		scope.$watch "term", ->
+			$lis.addClass "hide"
+			null
+		watchTerm = if scope.inputFromParent then "$parent.#{scope.inputFromParent}" else "term"
+		scope.$watch watchTerm, ->
 			return unless $lis
 			currentEl.className = "show" if currentEl
 			currentEl = null
+			term = if scope.inputFromParent then scope.$parent[scope.inputFromParent] else scope.term
 			for liEl in $lis
-				term = (scope.term || "").toLowerCase()
-				liEl.className = if liEl.innerHTML.toLowerCase().indexOf(term) >= 0 then "show" else "hide"
+				liEl.className = if term and liEl.innerHTML.toLowerCase().indexOf(term) >= 0 then "show" else "hide"
 			null
 		setCurrent = (direction) ->
 			if currentEl
@@ -57,5 +61,9 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", ($timeout) -
 				when 40, 16 # down, shift
 					setCurrent "next"
 				when 13, 32 # enter, space
-					scope.term = currentEl.innerHTML if currentEl?
+					if currentEl?
+						if scope.inputFromParent
+							scope.$parent[scope.inputFromParent] = currentEl.innerHTML
+						else
+							scope.term = currentEl.innerHTML
 ]
