@@ -17,6 +17,7 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", ($timeout) -
 			null
 		watchTerm = if scope.inputFromParent then "$parent.#{scope.inputFromParent}" else "term"
 		scope.$watch watchTerm, ->
+			return unless $ul
 			unless $lis
 				$lis = $ul.find "li"
 				$lis.addClass "hide"

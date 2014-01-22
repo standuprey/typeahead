@@ -20,6 +20,9 @@
           watchTerm = scope.inputFromParent ? "$parent." + scope.inputFromParent : "term";
           scope.$watch(watchTerm, function() {
             var liEl, term, _i, _len;
+            if (!$ul) {
+              return;
+            }
             if (!$lis) {
               $lis = $ul.find("li");
               $lis.addClass("hide");
