@@ -1,7 +1,7 @@
 typeahead Angular Module
 ========================
 
-Create an autocomplete for input fields
+Very barebone angular typeahead module. Creates an autocomplete for input fields
 
 Install
 -------
@@ -10,7 +10,6 @@ Copy the typeahead.js and typeahead.css file into your project and add the follo
 
 		<script src="/path/to/scripts/typeahead.js"></script>
 		<script src="/path/to/scripts/typeahead.css"></script>
-
 
 Alternatively, if you're using bower, you can add this to your component.json (or bower.json):
 
@@ -21,6 +20,7 @@ And add this to your HTML:
     <script src="components/typeahead/typeahead.js"></script>
     <script src="components/typeahead/typeahead.css"></script>
 
+Note that the style is very minimal, it's up to you to make it fit your need.
 
 Usage
 -----
