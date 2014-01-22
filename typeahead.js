@@ -13,16 +13,17 @@
           var $lis, $ul, currentEl, setAsCurrent, setCurrent, setFirstAsCurrent, setLastAsCurrent, watchTerm;
           $lis = $ul = currentEl = null;
           $timeout(function() {
-            $lis = element.find("li");
             $ul = element.find("ul");
-            $lis.addClass("hide");
+            $ul.addClass("hide");
             return null;
           });
           watchTerm = scope.inputFromParent ? "$parent." + scope.inputFromParent : "term";
           scope.$watch(watchTerm, function() {
             var liEl, term, _i, _len;
             if (!$lis) {
-              return;
+              $lis = $ul.find("li");
+              $lis.addClass("hide");
+              $ul.removeClass("hide");
             }
             if (currentEl) {
               currentEl.className = "show";
