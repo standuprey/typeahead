@@ -6,6 +6,7 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", "$compile", 
 		"""
 		scope: true
 		transclude: true
+		replace: true
 		restrict: "E"
 		compile: (element, attributes) ->
 			# copy the directive's attributes into the template's input element
