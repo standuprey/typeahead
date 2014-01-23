@@ -2,17 +2,18 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", "$compile", 
 
 	res =
 		template: """
-		<div><div ng-keydown="typeaheadKeydown($event)" ng-keyup="typeaheadKeyup($event)"><input ng-model="term" type="text" autocomplete="off" /><div ng-click="typeaheadSelect($event)"><div ng-transclude></div></div></div></div>
+		<div ng-keydown="typeaheadKeydown($event)" ng-keyup="typeaheadKeyup($event)"><input ng-model="term" type="text" autocomplete="off" /><div ng-click="typeaheadSelect($event)"><div ng-transclude></div></div></div>
 		"""
 		scope: true
 		transclude: true
-		replace: true
 		restrict: "E"
 		compile: (element, attributes) ->
 			# copy the directive's attributes into the template's input element
 			templateAttrs = []
 			$input = element.find "input"
-			$input.attr(value, attributes[attr]) for attr, value of attributes.$attr
+			for attr, value of attributes.$attr
+				$input.attr value, attributes[attr]
+				element[0].removeAttribute value
 
 			(scope, element, attributes) ->
 				$lis = $ul = currentEl = null
