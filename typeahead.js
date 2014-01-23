@@ -6,6 +6,7 @@
         template: "<div ng-keydown=\"typeaheadKeydown($event)\" ng-keyup=\"typeaheadKeyup()\"><input ng-model=\"term\" type=\"text\" autocomplete=\"off\" /><div ng-transclude></div></div>",
         scope: true,
         transclude: true,
+        replace: true,
         restrict: "E",
         compile: function(element, attributes) {
           var $input, attr, templateAttrs, value, _ref;
@@ -85,6 +86,7 @@
                   if (currentEl != null) {
                     $input.val(currentEl.innerHTML).triggerHandler("input");
                   }
+                  $lis.addClass("hide");
                   break;
                 default:
                   if (currentEl) {

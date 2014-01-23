@@ -2,7 +2,7 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", "$compile", 
 
 	res =
 		template: """
-		<div ng-keydown="typeaheadKeydown($event)" ng-keyup="typeaheadKeyup()"><input ng-model="term" type="text" autocomplete="off" /><div ng-transclude></div></div>
+		<div ng-keydown="typeaheadKeydown($event)" ng-keyup="typeaheadKeyup()"><input ng-model="term" type="text" autocomplete="off" /><div ng-click="typeaheadSelect($event)"><div ng-transclude></div></div></div>
 		"""
 		scope: true
 		transclude: true
@@ -52,6 +52,9 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", "$compile", 
 					currentEl = els[els.length - 1]
 					currentEl.className += " active" if currentEl
 					null
+				select = (el) ->
+					$input.val(el.innerHTML).triggerHandler("input")
+					$lis.addClass "hide"
 				scope.typeaheadKeydown = (evt) ->
 					switch evt.which
 						when 38 # top
@@ -59,11 +62,12 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", "$compile", 
 						when 40, 16 # down, shift
 							setCurrent "next"
 						when 13, 32 # enter, space
-							$input.val(currentEl.innerHTML).triggerHandler("input") if currentEl?
+							select(currentEl) if currentEl?
 						else
 							currentEl.className = "show" if currentEl
 							currentEl = null
 					null
+				scope.typeaheadSelect = (evt) -> select evt.target
 				scope.typeaheadKeyup = ->
 					unless $lis
 						$lis = $ul.find "li"
