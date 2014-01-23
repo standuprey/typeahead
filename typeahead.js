@@ -1,8 +1,7 @@
 (function() {
   angular.module("typeahead", []).directive("typeahead", [
     "$timeout", "$compile", function($timeout, $compile) {
-      var res;
-      res = {
+      return {
         template: "<div ng-keydown=\"typeaheadKeydown($event)\" ng-keyup=\"typeaheadKeyup($event)\"><input ng-model=\"term\" type=\"text\" autocomplete=\"off\" /><div ng-click=\"typeaheadSelect($event)\"><div ng-transclude></div></div></div>",
         scope: true,
         transclude: true,
@@ -76,8 +75,10 @@
               return null;
             };
             select = function(el) {
-              $input.val(el.innerHTML).triggerHandler("input");
-              $lis.removeClass("show").removeClass("active").addClass("hide");
+              $timeout(function() {
+                $input.val(el.innerHTML).triggerHandler("input");
+                return $lis.removeClass("show").removeClass("active").addClass("hide");
+              });
               return null;
             };
             scope.typeaheadKeydown = function(evt) {
@@ -130,7 +131,6 @@
           };
         }
       };
-      return res;
     }
   ]);
 
