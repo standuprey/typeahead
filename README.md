@@ -34,7 +34,7 @@ And don't forget to add the module to your application
 
 		angular.module("myApp", ["typeahead"])
 
-Every attribute except that you add to the typeahead tag will be put to the input tag.
+Every attribute that you add to the typeahead tag will be put to the input tag.
 Note that the default type for input is text, but it can be changed, for example <typeahead type="email">
 
 Demo
