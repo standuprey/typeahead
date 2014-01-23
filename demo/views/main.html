@@ -1,15 +1,5 @@
-<h3>Without defining the input field</h3>
-<p>Enter the name of a car manufacturer</p>
-<typeahead>
-	<ul>
-		<li ng-repeat="value in autocompleteValues">{{value}}</li>
-	</ul>
-</typeahead>
-
-<h3>Defining a custom input field</h3>
-<p>Enter the name of a car manufacturer</p>
-<input ng-model="name"/>
-<typeahead model="name">
+<p>Selected car brand: {{obj.name}}</p>
+<typeahead placeholder="Enter the name of a car manufacturer" ng-model="obj.name">
 	<ul>
 		<li ng-repeat="value in autocompleteValues">{{value}}</li>
 	</ul>
