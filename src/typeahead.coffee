@@ -2,7 +2,7 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", "$compile", 
 
 	res =
 		template: """
-		<div ng-keydown="typeaheadKeydown($event)" ng-keyup="typeaheadKeyup()"><input ng-model="term" type="text" autocomplete="off" /><div ng-click="typeaheadSelect($event)"><div ng-transclude></div></div></div>
+		<div><div ng-keydown="typeaheadKeydown($event)" ng-keyup="typeaheadKeyup($event)"><input ng-model="term" type="text" autocomplete="off" /><div ng-click="typeaheadSelect($event)"><div ng-transclude></div></div></div></div>
 		"""
 		scope: true
 		transclude: true
@@ -24,6 +24,7 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", "$compile", 
 					null
 
 				setCurrent = (direction) ->
+					return unless $ul[0].getElementsByClassName("show")[0]
 					if currentEl
 						currentEl.className = "show"
 						oldCurrentEl = currentEl
@@ -54,7 +55,8 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", "$compile", 
 					null
 				select = (el) ->
 					$input.val(el.innerHTML).triggerHandler("input")
-					$lis.addClass "hide"
+					$lis.removeClass("show").removeClass("active").addClass "hide"
+					null
 				scope.typeaheadKeydown = (evt) ->
 					switch evt.which
 						when 38 # top
@@ -63,12 +65,16 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", "$compile", 
 							setCurrent "next"
 						when 13, 32 # enter, space
 							select(currentEl) if currentEl?
+						when 27 # esc
+							$lis.removeClass("show").removeClass("active").addClass "hide"
+							currentEl = null
 						else
 							currentEl.className = "show" if currentEl
 							currentEl = null
 					null
 				scope.typeaheadSelect = (evt) -> select evt.target
-				scope.typeaheadKeyup = ->
+				scope.typeaheadKeyup =(evt) ->
+					return if evt.which in [38, 40, 16, 32, 13, 27]
 					unless $lis
 						$lis = $ul.find "li"
 						$lis.addClass "hide"
@@ -77,9 +83,7 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", "$compile", 
 					# if the declaration is something like <typeahead ng-model="something">...
 					term = $input.val().toLowerCase()
 					for liEl in $lis
-						cssClass = if liEl.className.indexOf("active") is -1 then "" else "active "
-						cssClass += if term and liEl.innerHTML.toLowerCase().indexOf(term) >= 0 then "show" else "hide"
-						liEl.className = cssClass
+						liEl.className = if term and liEl.innerHTML.toLowerCase().indexOf(term) >= 0 then "show" else "hide"
 					null
 	res
 ]
