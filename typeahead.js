@@ -3,10 +3,9 @@
     "$timeout", "$compile", function($timeout, $compile) {
       var res;
       res = {
-        template: "<div ng-keydown=\"typeaheadKeydown($event)\" ng-keyup=\"typeaheadKeyup()\"><input ng-model=\"term\" type=\"text\" autocomplete=\"off\" /><div ng-transclude></div></div>",
+        template: "<div ng-keydown=\"typeaheadKeydown($event)\" ng-keyup=\"typeaheadKeyup($event)\"><input ng-model=\"term\" type=\"text\" autocomplete=\"off\" /><div ng-click=\"typeaheadSelect($event)\"><div ng-transclude></div></div></div>",
         scope: true,
         transclude: true,
-        replace: true,
         restrict: "E",
         compile: function(element, attributes) {
           var $input, attr, templateAttrs, value, _ref;
@@ -16,9 +15,10 @@
           for (attr in _ref) {
             value = _ref[attr];
             $input.attr(value, attributes[attr]);
+            element[0].removeAttribute(value);
           }
           return function(scope, element, attributes) {
-            var $lis, $ul, currentEl, setAsCurrent, setCurrent, setFirstAsCurrent, setLastAsCurrent;
+            var $lis, $ul, currentEl, select, setAsCurrent, setCurrent, setFirstAsCurrent, setLastAsCurrent;
             $lis = $ul = currentEl = null;
             $input = element.find("input");
             $timeout(function() {
@@ -28,6 +28,9 @@
             });
             setCurrent = function(direction) {
               var oldCurrentEl;
+              if (!$ul[0].getElementsByClassName("show")[0]) {
+                return;
+              }
               if (currentEl) {
                 currentEl.className = "show";
                 oldCurrentEl = currentEl;
@@ -72,6 +75,11 @@
               }
               return null;
             };
+            select = function(el) {
+              $input.val(el.innerHTML).triggerHandler("input");
+              $lis.removeClass("show").removeClass("active").addClass("hide");
+              return null;
+            };
             scope.typeaheadKeydown = function(evt) {
               switch (evt.which) {
                 case 38:
@@ -84,9 +92,12 @@
                 case 13:
                 case 32:
                   if (currentEl != null) {
-                    $input.val(currentEl.innerHTML).triggerHandler("input");
+                    select(currentEl);
                   }
-                  $lis.addClass("hide");
+                  break;
+                case 27:
+                  $lis.removeClass("show").removeClass("active").addClass("hide");
+                  currentEl = null;
                   break;
                 default:
                   if (currentEl) {
@@ -96,8 +107,14 @@
               }
               return null;
             };
-            return scope.typeaheadKeyup = function() {
-              var cssClass, liEl, term, _i, _len;
+            scope.typeaheadSelect = function(evt) {
+              return select(evt.target);
+            };
+            return scope.typeaheadKeyup = function(evt) {
+              var liEl, term, _i, _len, _ref1;
+              if ((_ref1 = evt.which) === 38 || _ref1 === 40 || _ref1 === 16 || _ref1 === 32 || _ref1 === 13 || _ref1 === 27) {
+                return;
+              }
               if (!$lis) {
                 $lis = $ul.find("li");
                 $lis.addClass("hide");
@@ -106,9 +123,7 @@
               term = $input.val().toLowerCase();
               for (_i = 0, _len = $lis.length; _i < _len; _i++) {
                 liEl = $lis[_i];
-                cssClass = liEl.className.indexOf("active") === -1 ? "" : "active ";
-                cssClass += term && liEl.innerHTML.toLowerCase().indexOf(term) >= 0 ? "show" : "hide";
-                liEl.className = cssClass;
+                liEl.className = term && liEl.innerHTML.toLowerCase().indexOf(term) >= 0 ? "show" : "hide";
               }
               return null;
             };
