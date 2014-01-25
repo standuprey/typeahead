@@ -18,10 +18,15 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", ($timeout) -
 			$lis = $ul = currentEl = null
 			$input = element.find "input"
 
+			# we don't use ng-blur to make sure typeahead can have a custom ng-blur too
+			$input[0].addEventListener "blur", -> hideList()
+			
 			$timeout ->
 				$ul = element.find "ul"
 				$ul.addClass "hide"
 				null
+
+			hideList = -> $lis.removeClass("show").removeClass("active").addClass "hide"
 
 			setCurrent = (direction) ->
 				return unless $ul[0].getElementsByClassName("show")[0]
@@ -56,7 +61,7 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", ($timeout) -
 			select = (el) ->
 				$timeout ->
 					$input.val(el.innerHTML).triggerHandler("input")
-					$lis.removeClass("show").removeClass("active").addClass "hide"
+					hideList()
 				null
 			scope.typeaheadKeydown = (evt) ->
 				switch evt.which
@@ -67,7 +72,7 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", ($timeout) -
 					when 13, 32 # enter, space
 						select(currentEl) if currentEl?
 					when 27 # esc
-						$lis.removeClass("show").removeClass("active").addClass "hide"
+						hideList()
 						currentEl = null
 					else
 						currentEl.className = "show" if currentEl
