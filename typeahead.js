@@ -16,14 +16,20 @@
             element[0].removeAttribute(value);
           }
           return function(scope, element, attributes) {
-            var $input, $lis, $ul, currentEl, select, setAsCurrent, setCurrent, setFirstAsCurrent, setLastAsCurrent;
+            var $input, $lis, $ul, currentEl, hideList, select, setAsCurrent, setCurrent, setFirstAsCurrent, setLastAsCurrent;
             $lis = $ul = currentEl = null;
             $input = element.find("input");
+            $input[0].addEventListener("blur", function() {
+              return hideList();
+            });
             $timeout(function() {
               $ul = element.find("ul");
               $ul.addClass("hide");
               return null;
             });
+            hideList = function() {
+              return $lis.removeClass("show").removeClass("active").addClass("hide");
+            };
             setCurrent = function(direction) {
               var oldCurrentEl;
               if (!$ul[0].getElementsByClassName("show")[0]) {
@@ -76,7 +82,7 @@
             select = function(el) {
               $timeout(function() {
                 $input.val(el.innerHTML).triggerHandler("input");
-                return $lis.removeClass("show").removeClass("active").addClass("hide");
+                return hideList();
               });
               return null;
             };
@@ -96,7 +102,7 @@
                   }
                   break;
                 case 27:
-                  $lis.removeClass("show").removeClass("active").addClass("hide");
+                  hideList();
                   currentEl = null;
                   break;
                 default:
