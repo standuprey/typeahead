@@ -7,17 +7,17 @@
         transclude: true,
         restrict: "E",
         compile: function(element, attributes) {
-          var $input, attr, templateAttrs, value, _ref;
+          var $el, attr, templateAttrs, value, _ref;
           templateAttrs = [];
-          $input = element.find("input");
+          $el = element.find("input");
           _ref = attributes.$attr;
           for (attr in _ref) {
             value = _ref[attr];
-            $input.attr(value, attributes[attr]);
+            $el.attr(value, attributes[attr]);
             element[0].removeAttribute(value);
           }
           return function(scope, element, attributes) {
-            var $lis, $ul, currentEl, select, setAsCurrent, setCurrent, setFirstAsCurrent, setLastAsCurrent;
+            var $input, $lis, $ul, currentEl, select, setAsCurrent, setCurrent, setFirstAsCurrent, setLastAsCurrent;
             $lis = $ul = currentEl = null;
             $input = element.find("input");
             $timeout(function() {

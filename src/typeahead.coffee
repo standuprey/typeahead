@@ -9,9 +9,11 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", "$compile", 
 	compile: (element, attributes) ->
 		# copy the directive's attributes into the template's input element
 		templateAttrs = []
-		$input = element.find "input"
+		# $el used to be called $input but:
+		# http://walpurgisriot.github.io/blog/2013/12/16/the-worst-thing-about-coffeescript
+		$el = element.find "input"
 		for attr, value of attributes.$attr
-			$input.attr value, attributes[attr]
+			$el.attr value, attributes[attr]
 			element[0].removeAttribute value
 
 		(scope, element, attributes) ->
