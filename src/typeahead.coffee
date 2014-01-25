@@ -15,18 +15,18 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", ($timeout) -
 			element[0].removeAttribute value
 
 		(scope, element, attributes) ->
-			$lis = $ul = currentEl = null
+			$ul = currentEl = null
 			$input = element.find "input"
 
 			# we don't use ng-blur to make sure typeahead can have a custom ng-blur too
 			$input[0].addEventListener "blur", -> hideList()
-			
+
 			$timeout ->
 				$ul = element.find "ul"
-				$ul.addClass "hide"
+				$ul.find("li").addClass "hide"
 				null
 
-			hideList = -> $lis.removeClass("show").removeClass("active").addClass "hide"
+			hideList = -> $ul.find("li").removeClass("show").removeClass("active").addClass "hide"
 
 			setCurrent = (direction) ->
 				return unless $ul[0].getElementsByClassName("show")[0]
@@ -81,14 +81,11 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", ($timeout) -
 			scope.typeaheadSelect = (evt) -> select evt.target
 			scope.typeaheadKeyup =(evt) ->
 				return if evt.which in [38, 40, 16, 32, 13, 27]
-				unless $lis
-					$lis = $ul.find "li"
-					$lis.addClass "hide"
-					$ul.removeClass "hide"
 				# we don't use ng-model (scope.term) here, because it might have been overwritten
 				# if the declaration is something like <typeahead ng-model="something">...
 				term = $input.val().toLowerCase()
-				for liEl in $lis
+				# Reselect LIs every time in case some have been added dynamically
+				for liEl in $ul.find("li")
 					liEl.className = if term and liEl.innerHTML.toLowerCase().indexOf(term) >= 0 then "show" else "hide"
 				null
 ]
