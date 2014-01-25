@@ -1,14 +1,13 @@
 (function() {
   angular.module("typeahead", []).directive("typeahead", [
-    "$timeout", "$compile", function($timeout, $compile) {
+    "$timeout", function($timeout) {
       return {
         template: "<div ng-keydown=\"typeaheadKeydown($event)\" ng-keyup=\"typeaheadKeyup($event)\"><input ng-model=\"term\" type=\"text\" autocomplete=\"off\" /><div ng-click=\"typeaheadSelect($event)\"><div ng-transclude></div></div></div>",
         scope: true,
         transclude: true,
         restrict: "E",
         compile: function(element, attributes) {
-          var $el, attr, templateAttrs, value, _ref;
-          templateAttrs = [];
+          var $el, attr, value, _ref;
           $el = element.find("input");
           _ref = attributes.$attr;
           for (attr in _ref) {
