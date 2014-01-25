@@ -16,19 +16,19 @@
             element[0].removeAttribute(value);
           }
           return function(scope, element, attributes) {
-            var $input, $lis, $ul, currentEl, hideList, select, setAsCurrent, setCurrent, setFirstAsCurrent, setLastAsCurrent;
-            $lis = $ul = currentEl = null;
+            var $input, $ul, currentEl, hideList, select, setAsCurrent, setCurrent, setFirstAsCurrent, setLastAsCurrent;
+            $ul = currentEl = null;
             $input = element.find("input");
             $input[0].addEventListener("blur", function() {
               return hideList();
             });
             $timeout(function() {
               $ul = element.find("ul");
-              $ul.addClass("hide");
+              $ul.find("li").addClass("hide");
               return null;
             });
             hideList = function() {
-              return $lis.removeClass("show").removeClass("active").addClass("hide");
+              return $ul.find("li").removeClass("show").removeClass("active").addClass("hide");
             };
             setCurrent = function(direction) {
               var oldCurrentEl;
@@ -117,18 +117,14 @@
               return select(evt.target);
             };
             return scope.typeaheadKeyup = function(evt) {
-              var liEl, term, _i, _len, _ref1;
+              var liEl, term, _i, _len, _ref1, _ref2;
               if ((_ref1 = evt.which) === 38 || _ref1 === 40 || _ref1 === 16 || _ref1 === 32 || _ref1 === 13 || _ref1 === 27) {
                 return;
               }
-              if (!$lis) {
-                $lis = $ul.find("li");
-                $lis.addClass("hide");
-                $ul.removeClass("hide");
-              }
               term = $input.val().toLowerCase();
-              for (_i = 0, _len = $lis.length; _i < _len; _i++) {
-                liEl = $lis[_i];
+              _ref2 = $ul.find("li");
+              for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+                liEl = _ref2[_i];
                 liEl.className = term && liEl.innerHTML.toLowerCase().indexOf(term) >= 0 ? "show" : "hide";
               }
               return null;
