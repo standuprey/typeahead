@@ -1,4 +1,4 @@
-angular.module("typeahead", []).directive "typeahead", ["$timeout", "$compile", ($timeout, $compile) ->
+angular.module("typeahead", []).directive "typeahead", ["$timeout", ($timeout) ->
 
 	template: """
 	<div ng-keydown="typeaheadKeydown($event)" ng-keyup="typeaheadKeyup($event)"><input ng-model="term" type="text" autocomplete="off" /><div ng-click="typeaheadSelect($event)"><div ng-transclude></div></div></div>
@@ -7,8 +7,6 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", "$compile", 
 	transclude: true
 	restrict: "E"
 	compile: (element, attributes) ->
-		# copy the directive's attributes into the template's input element
-		templateAttrs = []
 		# $el used to be called $input but:
 		# http://walpurgisriot.github.io/blog/2013/12/16/the-worst-thing-about-coffeescript
 		$el = element.find "input"
