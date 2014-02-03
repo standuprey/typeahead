@@ -2,7 +2,7 @@
   angular.module("typeahead", []).directive("typeahead", [
     "$timeout", function($timeout) {
       return {
-        template: "<div ng-keydown=\"typeaheadKeydown($event)\" ng-keyup=\"typeaheadKeyup($event)\"><input ng-model=\"term\" type=\"text\" autocomplete=\"off\" /><div ng-click=\"typeaheadSelect($event)\"><div ng-transclude></div></div></div>",
+        template: "<div ng-keydown=\"typeaheadKeydown($event)\" ng-keyup=\"typeaheadKeyup($event)\">\n	<input ng-model=\"term\" type=\"text\" autocomplete=\"off\" />\n	<div ng-click=\"typeaheadSelect($event)\" ng-transclude></div>\n</div>",
         scope: true,
         transclude: true,
         restrict: "E",
@@ -24,11 +24,13 @@
             });
             $timeout(function() {
               $ul = element.find("ul");
-              $ul.find("li").addClass("hide");
+              $ul.find("li").addClass(attributes.showIfEmpty != null ? "show" : "hide");
               return null;
             });
             hideList = function() {
-              return $ul.find("li").removeClass("show").removeClass("active").addClass("hide");
+              if (attributes.showIfEmpty == null) {
+                return $ul.find("li").removeClass("show").removeClass("active").addClass("hide");
+              }
             };
             setCurrent = function(direction) {
               var oldCurrentEl;
@@ -125,7 +127,7 @@
               _ref2 = $ul.find("li");
               for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
                 liEl = _ref2[_i];
-                liEl.className = term && liEl.innerHTML.toLowerCase().indexOf(term) >= 0 ? "show" : "hide";
+                liEl.className = (!term && (attributes.showIfEmpty != null)) || (term && liEl.innerHTML.toLowerCase().indexOf(term) >= 0) ? "show" : "hide";
               }
               return null;
             };
