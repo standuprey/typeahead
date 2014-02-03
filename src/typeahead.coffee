@@ -1,7 +1,10 @@
 angular.module("typeahead", []).directive "typeahead", ["$timeout", ($timeout) ->
 
 	template: """
-	<div ng-keydown="typeaheadKeydown($event)" ng-keyup="typeaheadKeyup($event)"><input ng-model="term" type="text" autocomplete="off" /><div ng-click="typeaheadSelect($event)"><div ng-transclude></div></div></div>
+	<div ng-keydown="typeaheadKeydown($event)" ng-keyup="typeaheadKeyup($event)">
+		<input ng-model="term" type="text" autocomplete="off" />
+		<div ng-click="typeaheadSelect($event)" ng-transclude></div>
+	</div>
 	"""
 	scope: true
 	transclude: true
@@ -23,10 +26,10 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", ($timeout) -
 
 			$timeout ->
 				$ul = element.find "ul"
-				$ul.find("li").addClass "hide"
+				$ul.find("li").addClass(if attributes.showIfEmpty? then "show" else "hide")
 				null
 
-			hideList = -> $ul.find("li").removeClass("show").removeClass("active").addClass "hide"
+			hideList = -> $ul.find("li").removeClass("show").removeClass("active").addClass("hide") unless attributes.showIfEmpty?
 
 			setCurrent = (direction) ->
 				return unless $ul[0].getElementsByClassName("show")[0]
@@ -86,6 +89,6 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", ($timeout) -
 				term = $input.val().toLowerCase()
 				# Reselect LIs every time in case some have been added dynamically
 				for liEl in $ul.find("li")
-					liEl.className = if term and liEl.innerHTML.toLowerCase().indexOf(term) >= 0 then "show" else "hide"
+					liEl.className = if (not term and attributes.showIfEmpty?) or (term and liEl.innerHTML.toLowerCase().indexOf(term) >= 0) then "show" else "hide"
 				null
 ]

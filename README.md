@@ -37,6 +37,12 @@ And don't forget to add the module to your application
 Every attribute that you add to the typeahead tag will be put to the input tag.
 Note that the default type for input is text, but it can be changed, for example <typeahead type="email">
 
+Options
+-------
+
+You can decide to keep the list visible by adding the show-if-empty attribute like this:
+    <typeahead type="email" show-if-empty>
+
 Demo
 ----
 
