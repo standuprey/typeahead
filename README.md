@@ -41,7 +41,7 @@ Options
 -------
 
 You can decide to keep the list visible by adding the show-if-empty attribute like this:
-    <typeahead type="email" show-if-empty>
+		<typeahead type="email" show-if-empty>
 
 Demo
 ----
