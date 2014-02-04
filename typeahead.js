@@ -7,7 +7,8 @@
         transclude: true,
         restrict: "E",
         compile: function(element, attributes) {
-          var $el, attr, value, _ref;
+          var $el, attr, needHide, value, _ref;
+          needHide = false;
           $el = element.find("input");
           _ref = attributes.$attr;
           for (attr in _ref) {
@@ -20,7 +21,12 @@
             $ul = currentEl = null;
             $input = element.find("input");
             $input[0].addEventListener("blur", function() {
-              return hideList();
+              needHide = true;
+              return $timeout(function() {
+                if (needHide) {
+                  return hideList();
+                }
+              }, 150);
             });
             $timeout(function() {
               $ul = element.find("ul");
@@ -82,10 +88,14 @@
               return null;
             };
             select = function(el) {
-              $timeout(function() {
-                $input.val(el.innerHTML).triggerHandler("input");
-                return hideList();
-              });
+              var text;
+              if (el.tagName === "LI") {
+                text = angular.element(el).text();
+                $timeout(function() {
+                  $input.val(text).triggerHandler("input");
+                  return hideList();
+                });
+              }
               return null;
             };
             scope.typeaheadKeydown = function(evt) {
@@ -116,6 +126,7 @@
               return null;
             };
             scope.typeaheadSelect = function(evt) {
+              needHide = false;
               return select(evt.target);
             };
             return scope.typeaheadKeyup = function(evt) {
