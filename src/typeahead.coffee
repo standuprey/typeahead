@@ -10,6 +10,7 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", ($timeout) -
 	transclude: true
 	restrict: "E"
 	compile: (element, attributes) ->
+		needHide = false
 		# $el used to be called $input but:
 		# http://walpurgisriot.github.io/blog/2013/12/16/the-worst-thing-about-coffeescript
 		$el = element.find "input"
@@ -22,7 +23,11 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", ($timeout) -
 			$input = element.find "input"
 
 			# we don't use ng-blur to make sure typeahead can have a custom ng-blur too
-			$input[0].addEventListener "blur", -> hideList()
+			$input[0].addEventListener "blur", ->
+				needHide = true
+				$timeout ->
+					hideList() if needHide
+				, 150
 
 			$timeout ->
 				$ul = element.find "ul"
@@ -62,9 +67,11 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", ($timeout) -
 				currentEl.className += " active" if currentEl
 				null
 			select = (el) ->
-				$timeout ->
-					$input.val(el.innerHTML).triggerHandler("input")
-					hideList()
+				if el.tagName is "LI"
+					text = angular.element(el).text()
+					$timeout ->
+						$input.val(text).triggerHandler("input")
+						hideList()
 				null
 			scope.typeaheadKeydown = (evt) ->
 				switch evt.which
@@ -81,7 +88,9 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", ($timeout) -
 						currentEl.className = "show" if currentEl
 						currentEl = null
 				null
-			scope.typeaheadSelect = (evt) -> select evt.target
+			scope.typeaheadSelect = (evt) ->
+				needHide = false
+				select evt.target
 			scope.typeaheadKeyup =(evt) ->
 				return if evt.which in [38, 40, 16, 32, 13, 27]
 				# we don't use ng-model (scope.term) here, because it might have been overwritten
