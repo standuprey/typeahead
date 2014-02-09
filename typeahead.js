@@ -1,6 +1,6 @@
 (function() {
   angular.module("typeahead", []).directive("typeahead", [
-    "$timeout, $rootScope", function($timeout, $rootScope) {
+    "$timeout", "$rootScope", function($timeout, $rootScope) {
       return {
         template: "<div ng-keydown=\"typeaheadKeydown($event)\" ng-keyup=\"typeaheadKeyup($event)\">\n	<input ng-model=\"term\" type=\"text\" autocomplete=\"off\" />\n	<div ng-click=\"typeaheadSelect($event)\" ng-transclude></div>\n</div>",
         scope: true,
@@ -109,6 +109,12 @@
                   setCurrent("next");
                   break;
                 case 13:
+                  if (currentEl != null) {
+                    select(currentEl);
+                  } else {
+                    $rootScope.$broadcast("typeahead:input", $input.val());
+                  }
+                  break;
                 case 32:
                   if (currentEl != null) {
                     select(currentEl);
