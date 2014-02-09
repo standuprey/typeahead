@@ -1,4 +1,4 @@
-angular.module("typeahead", []).directive "typeahead", ["$timeout", ($timeout) ->
+angular.module("typeahead", []).directive "typeahead", ["$timeout", "$rootScope", ($timeout, $rootScope) ->
 
 	template: """
 	<div ng-keydown="typeaheadKeydown($event)" ng-keyup="typeaheadKeyup($event)">
@@ -69,6 +69,7 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", ($timeout) -
 			select = (el) ->
 				if el.tagName is "LI"
 					text = angular.element(el).text()
+					$rootScope.$broadcast "typeahead:input", text
 					$timeout ->
 						$input.val(text).triggerHandler("input")
 						hideList()
@@ -79,8 +80,14 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", ($timeout) -
 						setCurrent "previous"
 					when 40, 16 # down, shift
 						setCurrent "next"
-					when 13, 32 # enter, space
+					when 13 # enter
+						if currentEl?
+							select(currentEl)
+						else
+							$rootScope.$broadcast "typeahead:input", $input.val()
+					when 32 # space
 						select(currentEl) if currentEl?
+
 					when 27 # esc
 						hideList()
 						currentEl = null

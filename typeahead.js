@@ -1,6 +1,6 @@
 (function() {
   angular.module("typeahead", []).directive("typeahead", [
-    "$timeout", function($timeout) {
+    "$timeout, $rootScope", function($timeout, $rootScope) {
       return {
         template: "<div ng-keydown=\"typeaheadKeydown($event)\" ng-keyup=\"typeaheadKeyup($event)\">\n	<input ng-model=\"term\" type=\"text\" autocomplete=\"off\" />\n	<div ng-click=\"typeaheadSelect($event)\" ng-transclude></div>\n</div>",
         scope: true,
@@ -91,6 +91,7 @@
               var text;
               if (el.tagName === "LI") {
                 text = angular.element(el).text();
+                $rootScope.$broadcast("typeahead:input", text);
                 $timeout(function() {
                   $input.val(text).triggerHandler("input");
                   return hideList();

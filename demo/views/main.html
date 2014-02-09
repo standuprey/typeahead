@@ -1,4 +1,5 @@
 <p>Selected car brand: {{obj.name}}</p>
+<p ng-show="input">Car brand selected: {{input}}</p>
 <typeahead placeholder="Enter the name of a car manufacturer" ng-model="obj.name">
 	<ul>
 		<li ng-repeat="value in autocompleteValues">{{value}}</li>

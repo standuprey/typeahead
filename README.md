@@ -44,6 +44,13 @@ You can decide to keep the list visible by adding the show-if-empty attribute li
 
 		<typeahead type="email" show-if-empty>
 
+Event
+-------
+
+The Event "typeahead:input" will be sent when the input is selected, so you can register to the event this way (the demo includes that too):
+
+		$scope.$on("typeahead:input", function(e, input) {...});
+
 Demo
 ----
 
