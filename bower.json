@@ -1,13 +1,13 @@
 {
   "author": "Stanislas Duprey",
   "name": "typeahead",
-  "description": "Preview and crop a picture before upload",
+  "description": "Very barebone angular typeahead module. Creates an autocomplete for input fields",
   "homepage": "http://github.com/standup75/typeahead",
   "repository": {
     "type": "git",
     "url": "git://github.com/standup75/typeahead.git"
   },
-  "main": "./build/audiometa.js",
+  "main": "./typeahead.js",
   "version": "0.0.1",
   "dependencies": {
     "angular": "~1.2.6",

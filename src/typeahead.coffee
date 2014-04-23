@@ -37,7 +37,7 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", "$rootScope"
 			hideList = -> $ul.find("li").removeClass("show").removeClass("active").addClass("hide") unless attributes.showIfEmpty?
 
 			setCurrent = (direction) ->
-				return unless $ul[0].getElementsByClassName("show")[0]
+				return unless $ul and $ul[0].getElementsByClassName("show")[0]
 				if currentEl
 					currentEl.className = "show"
 					oldCurrentEl = currentEl
