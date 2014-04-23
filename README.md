@@ -13,7 +13,7 @@ Copy the typeahead.js and typeahead.css file into your project and add the follo
 
 Alternatively, if you're using bower, you can add this to your component.json (or bower.json):
 
-		"typeahead": "git://github.com/standup75/typeahead.git"
+		"angular-typeahead-basic": "~0.0.1"
 
 And add this to your HTML:
 
@@ -25,8 +25,8 @@ Note that the style is very minimal, it's up to you to make it fit your need.
 Usage
 -----
 		<typeahead>
-			<ul ng-repeat="value in autocompleteValues">
-					<li>{{value}}</li>
+			<ul>
+					<li ng-repeat="value in autocompleteValues">{{value}}</li>
 			</ul>
 		</typeahead>
 
