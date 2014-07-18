@@ -2,7 +2,11 @@
   angular.module("typeahead", []).directive("typeahead", [
     "$timeout", "$rootScope", function($timeout, $rootScope) {
       return {
-        template: "<div ng-keydown=\"typeaheadKeydown($event)\" ng-keyup=\"typeaheadKeyup($event)\">\n	<input ng-model=\"term\" type=\"text\" autocomplete=\"off\" />\n	<div class=\"empty\" ng-show=\"isEmpty\">{{emptyMessage}}</div>\n	<div ng-click=\"typeaheadSelect($event)\" ng-show=\"!isEmpty\" ng-transclude></div>\n</div>",
+        template: function(element, attributes) {
+          var emptyMessage;
+          emptyMessage = attributes.emptyMessage != null ? attributes.emptyMessage : "No results found for \"{{" + (attributes["ngModel"] || "term") + "}}\"";
+          return "<div ng-keydown=\"typeaheadKeydown($event)\" ng-keyup=\"typeaheadKeyup($event)\">\n	<input ng-model=\"term\" type=\"text\" autocomplete=\"off\" />\n	<div class=\"empty\" ng-show=\"isEmpty\">" + emptyMessage + "</div>\n	<div ng-click=\"typeaheadSelect($event)\" ng-show=\"!isEmpty\" ng-transclude></div>\n</div>";
+        },
         scope: true,
         transclude: true,
         restrict: "E",
@@ -21,7 +25,6 @@
             var $input, $lis, $ul, currentEl, hideList, select, setAsCurrent, setCurrent, setFirstAsCurrent, setLastAsCurrent;
             $ul = $lis = currentEl = null;
             $input = element.find("input");
-            scope.emptyMessage = attributes.emptyMessage != null ? attributes.emptyMessage : "No results found";
             $input[0].addEventListener("blur", function() {
               needHide = true;
               return $timeout(function() {

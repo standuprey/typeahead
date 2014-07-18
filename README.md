@@ -49,8 +49,9 @@ Options
 	You can customize the message to display if there is no results.
 	Defaults to "No results found"
 	Leave empty or set to "" to remove the message
+	You can insert the search result like this:
 
-			<typeahead type="email" empty-message="Nada gefunden">
+			<typeahead placeholder="Enter the name of a car manufacturer" ng-model="obj.name" empty-message="Never heard of a {{obj.name}} car">
 
 Event
 -------

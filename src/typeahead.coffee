@@ -1,12 +1,14 @@
 angular.module("typeahead", []).directive "typeahead", ["$timeout", "$rootScope", ($timeout, $rootScope) ->
 
-	template: """
-	<div ng-keydown="typeaheadKeydown($event)" ng-keyup="typeaheadKeyup($event)">
-		<input ng-model="term" type="text" autocomplete="off" />
-		<div class="empty" ng-show="isEmpty">{{emptyMessage}}</div>
-		<div ng-click="typeaheadSelect($event)" ng-show="!isEmpty" ng-transclude></div>
-	</div>
-	"""
+	template: (element, attributes) ->
+		emptyMessage = if attributes.emptyMessage? then attributes.emptyMessage else "No results found for \"{{#{attributes["ngModel"] || "term"}}}\""
+		"""
+		<div ng-keydown="typeaheadKeydown($event)" ng-keyup="typeaheadKeyup($event)">
+			<input ng-model="term" type="text" autocomplete="off" />
+			<div class="empty" ng-show="isEmpty">#{emptyMessage}</div>
+			<div ng-click="typeaheadSelect($event)" ng-show="!isEmpty" ng-transclude></div>
+		</div>
+		"""
 	scope: true
 	transclude: true
 	restrict: "E"
@@ -23,7 +25,6 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", "$rootScope"
 		(scope, element, attributes) ->
 			$ul = $lis = currentEl = null
 			$input = element.find "input"
-			scope.emptyMessage = if attributes.emptyMessage? then attributes.emptyMessage else "No results found"
 
 			# we don't use ng-blur to make sure typeahead can have a custom ng-blur too
 			$input[0].addEventListener "blur", ->
