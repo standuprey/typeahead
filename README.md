@@ -17,8 +17,8 @@ Alternatively, if you're using bower, you can add this to your component.json (o
 
 And add this to your HTML:
 
-		<script src="components/typeahead/typeahead.js"></script>
-		<script src="components/typeahead/typeahead.css"></script>
+		<script src="components/angular-typeahead-basic/typeahead.js"></script>
+		<script src="components/angular-typeahead-basic/typeahead.css"></script>
 
 Note that the style is very minimal, it's up to you to make it fit your need.
 
@@ -35,7 +35,7 @@ And don't forget to add the module to your application
 		angular.module("myApp", ["typeahead"])
 
 Every attribute that you add to the typeahead tag will be put to the input tag.
-Note that the default type for input is text, but it can be changed, for example <typeahead type="email">
+Note that the default type for input is text, but it can be changed, for example `<typeahead type="email">`
 
 Options
 -------
