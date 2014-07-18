@@ -31,10 +31,6 @@ module.exports = function (grunt) {
         files: ['<%= yeoman.demo %>/scripts/{,*/}*.coffee'],
         tasks: ['coffee:demo']
       },
-      coffeeTest: {
-        files: ['test/spec/{,*/}*.coffee'],
-        tasks: ['coffee:test']
-      },
       compass: {
         files: ['styles/{,*/}*.{scss,sass}'],
         tasks: ['compass']
@@ -64,16 +60,6 @@ module.exports = function (grunt) {
               mountFolder(connect, '.tmp'),
               mountFolder(connect, yeomanConfig.demo),
               mountFolder(connect, yeomanConfig.dist)
-            ];
-          }
-        }
-      },
-      test: {
-        options: {
-          middleware: function (connect) {
-            return [
-              mountFolder(connect, '.tmp'),
-              mountFolder(connect, 'test')
             ];
           }
         }
@@ -119,15 +105,6 @@ module.exports = function (grunt) {
           cwd: '<%= yeoman.demo %>/scripts',
           src: '{,*/}*.coffee',
           dest: '.tmp/demo/scripts',
-          ext: '.js'
-        }]
-      },
-      test: {
-        files: [{
-          expand: true,
-          cwd: 'test/spec',
-          src: '{,*/}*.coffee',
-          dest: '.tmp/spec',
           ext: '.js'
         }]
       }
@@ -185,23 +162,12 @@ module.exports = function (grunt) {
     'watch'
   ]);
 
-  grunt.registerTask('test', [
-    'clean:server',
-    'coffee:dist',
-    'coffee:test',
-    'concat',
-    'copy',
-    'connect:test',
-    'karma'
-  ]);
-
   grunt.registerTask('build', [
     'clean:dist',
     'coffee',
     'compass:dist',
     'concat',
-    'copy',
-    'test'
+    'copy'
   ]);
 
   grunt.registerTask('default', ['build']);

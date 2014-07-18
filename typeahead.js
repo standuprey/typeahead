@@ -2,13 +2,14 @@
   angular.module("typeahead", []).directive("typeahead", [
     "$timeout", "$rootScope", function($timeout, $rootScope) {
       return {
-        template: "<div ng-keydown=\"typeaheadKeydown($event)\" ng-keyup=\"typeaheadKeyup($event)\">\n	<input ng-model=\"term\" type=\"text\" autocomplete=\"off\" />\n	<div ng-click=\"typeaheadSelect($event)\" ng-transclude></div>\n</div>",
+        template: "<div ng-keydown=\"typeaheadKeydown($event)\" ng-keyup=\"typeaheadKeyup($event)\">\n	<input ng-model=\"term\" type=\"text\" autocomplete=\"off\" />\n	<div class=\"empty\" ng-show=\"isEmpty\">{{emptyMessage}}</div>\n	<div ng-click=\"typeaheadSelect($event)\" ng-show=\"!isEmpty\" ng-transclude></div>\n</div>",
         scope: true,
         transclude: true,
         restrict: "E",
         compile: function(element, attributes) {
-          var $el, attr, needHide, value, _ref;
+          var $el, attr, isEmpty, needHide, value, _ref;
           needHide = false;
+          isEmpty = false;
           $el = element.find("input");
           _ref = attributes.$attr;
           for (attr in _ref) {
@@ -17,9 +18,10 @@
             element[0].removeAttribute(value);
           }
           return function(scope, element, attributes) {
-            var $input, $ul, currentEl, hideList, select, setAsCurrent, setCurrent, setFirstAsCurrent, setLastAsCurrent;
-            $ul = currentEl = null;
+            var $input, $lis, $ul, currentEl, hideList, select, setAsCurrent, setCurrent, setFirstAsCurrent, setLastAsCurrent;
+            $ul = $lis = currentEl = null;
             $input = element.find("input");
+            scope.emptyMessage = attributes.emptyMessage != null ? attributes.emptyMessage : "No results found";
             $input[0].addEventListener("blur", function() {
               needHide = true;
               return $timeout(function() {
@@ -30,17 +32,19 @@
             });
             $timeout(function() {
               $ul = element.find("ul");
-              $ul.find("li").addClass(attributes.showIfEmpty != null ? "show" : "hide");
+              $lis = element.find("li");
+              $lis.addClass(attributes.showIfEmpty != null ? "show" : "hide");
+              scope.isEmpty = !$lis.length;
               return null;
             });
             hideList = function() {
               if (attributes.showIfEmpty == null) {
-                return $ul.find("li").removeClass("show").removeClass("active").addClass("hide");
+                return $lis.removeClass("show").removeClass("active").addClass("hide");
               }
             };
             setCurrent = function(direction) {
               var oldCurrentEl;
-              if (!$ul[0].getElementsByClassName("show")[0]) {
+              if (!($ul && $ul[0].getElementsByClassName("show")[0])) {
                 return;
               }
               if (currentEl) {
@@ -137,15 +141,20 @@
               return select(evt.target);
             };
             return scope.typeaheadKeyup = function(evt) {
-              var liEl, term, _i, _len, _ref1, _ref2;
+              var liEl, term, _i, _len, _ref1;
               if ((_ref1 = evt.which) === 38 || _ref1 === 40 || _ref1 === 16 || _ref1 === 32 || _ref1 === 13 || _ref1 === 27) {
                 return;
               }
               term = $input.val().toLowerCase();
-              _ref2 = $ul.find("li");
-              for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
-                liEl = _ref2[_i];
-                liEl.className = (!term && (attributes.showIfEmpty != null)) || (term && liEl.innerHTML.toLowerCase().indexOf(term) >= 0) ? "show" : "hide";
+              scope.isEmpty = true;
+              for (_i = 0, _len = $lis.length; _i < _len; _i++) {
+                liEl = $lis[_i];
+                if ((!term && (attributes.showIfEmpty != null)) || (term && liEl.innerHTML.toLowerCase().indexOf(term) >= 0)) {
+                  liEl.className = "show";
+                  scope.isEmpty = false;
+                } else {
+                  liEl.className = "hide";
+                }
               }
               return null;
             };

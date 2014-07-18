@@ -3,7 +3,8 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", "$rootScope"
 	template: """
 	<div ng-keydown="typeaheadKeydown($event)" ng-keyup="typeaheadKeyup($event)">
 		<input ng-model="term" type="text" autocomplete="off" />
-		<div ng-click="typeaheadSelect($event)" ng-transclude></div>
+		<div class="empty" ng-show="isEmpty">{{emptyMessage}}</div>
+		<div ng-click="typeaheadSelect($event)" ng-show="!isEmpty" ng-transclude></div>
 	</div>
 	"""
 	scope: true
@@ -11,6 +12,7 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", "$rootScope"
 	restrict: "E"
 	compile: (element, attributes) ->
 		needHide = false
+		isEmpty = false
 		# $el used to be called $input but:
 		# http://walpurgisriot.github.io/blog/2013/12/16/the-worst-thing-about-coffeescript
 		$el = element.find "input"
@@ -19,8 +21,9 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", "$rootScope"
 			element[0].removeAttribute value
 
 		(scope, element, attributes) ->
-			$ul = currentEl = null
+			$ul = $lis = currentEl = null
 			$input = element.find "input"
+			scope.emptyMessage = if attributes.emptyMessage? then attributes.emptyMessage else "No results found"
 
 			# we don't use ng-blur to make sure typeahead can have a custom ng-blur too
 			$input[0].addEventListener "blur", ->
@@ -31,10 +34,12 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", "$rootScope"
 
 			$timeout ->
 				$ul = element.find "ul"
-				$ul.find("li").addClass(if attributes.showIfEmpty? then "show" else "hide")
+				$lis = element.find "li"
+				$lis.addClass(if attributes.showIfEmpty? then "show" else "hide")
+				scope.isEmpty = !$lis.length
 				null
 
-			hideList = -> $ul.find("li").removeClass("show").removeClass("active").addClass("hide") unless attributes.showIfEmpty?
+			hideList = -> $lis.removeClass("show").removeClass("active").addClass("hide") unless attributes.showIfEmpty?
 
 			setCurrent = (direction) ->
 				return unless $ul and $ul[0].getElementsByClassName("show")[0]
@@ -104,7 +109,12 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", "$rootScope"
 				# if the declaration is something like <typeahead ng-model="something">...
 				term = $input.val().toLowerCase()
 				# Reselect LIs every time in case some have been added dynamically
-				for liEl in $ul.find("li")
-					liEl.className = if (not term and attributes.showIfEmpty?) or (term and liEl.innerHTML.toLowerCase().indexOf(term) >= 0) then "show" else "hide"
+				scope.isEmpty = true
+				for liEl in $lis
+					if (not term and attributes.showIfEmpty?) or (term and liEl.innerHTML.toLowerCase().indexOf(term) >= 0)
+						liEl.className = "show"
+						scope.isEmpty = false
+					else
+						liEl.className = "hide"
 				null
 ]

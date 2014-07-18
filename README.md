@@ -40,9 +40,17 @@ Note that the default type for input is text, but it can be changed, for example
 Options
 -------
 
-You can decide to keep the list visible by adding the show-if-empty attribute like this:
+- `show-if-empty`
+	You can decide to keep the list visible when no input is entered by adding the `show-if-empty` attribute like this:
 
-		<typeahead type="email" show-if-empty>
+			<typeahead type="email" show-if-empty>
+
+- `empty-message`
+	You can customize the message to display if there is no results.
+	Defaults to "No results found"
+	Leave empty or set to "" to remove the message
+
+			<typeahead type="email" empty-message="Nada gefunden">
 
 Event
 -------
