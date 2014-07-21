@@ -5,16 +5,14 @@
         template: function(element, attributes) {
           var emptyMessage;
           emptyMessage = attributes.emptyMessage != null ? attributes.emptyMessage : "No results found for \"{{" + (attributes["ngModel"] || "term") + "}}\"";
-          return "<div ng-keydown=\"typeaheadKeydown($event)\" ng-keyup=\"typeaheadKeyup($event)\">\n	<input ng-model=\"term\" type=\"text\" autocomplete=\"off\" />\n	<div class=\"empty\" ng-show=\"isEmpty && hasFilter\">" + emptyMessage + "</div>\n	<div ng-click=\"typeaheadSelect($event)\" ng-show=\"!isEmpty\" ng-transclude></div>\n</div>";
+          return "<div ng-keydown=\"typeaheadKeydown($event)\" ng-keyup=\"typeaheadKeyup($event)\">\n	<input ng-model=\"term\" type=\"text\" autocomplete=\"off\" />\n	<div class=\"empty\" ng-show=\"isEmpty\">" + emptyMessage + "</div>\n	<div ng-click=\"typeaheadSelect($event)\" ng-show=\"!isEmpty\" ng-transclude></div>\n</div>";
         },
         scope: true,
         transclude: true,
         restrict: "E",
         compile: function(element, attributes) {
-          var $el, attr, isEmpty, needHide, value, _ref;
+          var $el, attr, needHide, value, _ref;
           needHide = false;
-          isEmpty = false;
-          scope.hasFilter = false;
           $el = element.find("input");
           _ref = attributes.$attr;
           for (attr in _ref) {
@@ -24,6 +22,7 @@
           }
           return function(scope, element, attributes) {
             var $input, $lis, $ul, currentEl, hideList, select, setAsCurrent, setCurrent, setFirstAsCurrent, setLastAsCurrent;
+            scope.isEmpty = false;
             $ul = $lis = currentEl = null;
             $input = element.find("input");
             $input[0].addEventListener("blur", function() {
@@ -38,7 +37,6 @@
               $ul = element.find("ul");
               $lis = element.find("li");
               $lis.addClass(attributes.showIfEmpty != null ? "show" : "hide");
-              scope.isEmpty = !$lis.length;
               return null;
             });
             hideList = function() {
@@ -150,7 +148,6 @@
                 return;
               }
               term = $input.val().toLowerCase();
-              scope.hasFilter = !!term;
               scope.isEmpty = true;
               for (_i = 0, _len = $lis.length; _i < _len; _i++) {
                 liEl = $lis[_i];

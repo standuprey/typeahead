@@ -5,7 +5,7 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", "$rootScope"
 		"""
 		<div ng-keydown="typeaheadKeydown($event)" ng-keyup="typeaheadKeyup($event)">
 			<input ng-model="term" type="text" autocomplete="off" />
-			<div class="empty" ng-show="isEmpty && hasFilter">#{emptyMessage}</div>
+			<div class="empty" ng-show="isEmpty">#{emptyMessage}</div>
 			<div ng-click="typeaheadSelect($event)" ng-show="!isEmpty" ng-transclude></div>
 		</div>
 		"""
@@ -14,8 +14,6 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", "$rootScope"
 	restrict: "E"
 	compile: (element, attributes) ->
 		needHide = false
-		isEmpty = false
-		scope.hasFilter = false
 		# $el used to be called $input but:
 		# http://walpurgisriot.github.io/blog/2013/12/16/the-worst-thing-about-coffeescript
 		$el = element.find "input"
@@ -24,6 +22,7 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", "$rootScope"
 			element[0].removeAttribute value
 
 		(scope, element, attributes) ->
+			scope.isEmpty = false
 			$ul = $lis = currentEl = null
 			$input = element.find "input"
 
@@ -38,7 +37,6 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", "$rootScope"
 				$ul = element.find "ul"
 				$lis = element.find "li"
 				$lis.addClass(if attributes.showIfEmpty? then "show" else "hide")
-				scope.isEmpty = !$lis.length
 				null
 
 			hideList = -> $lis.removeClass("show").removeClass("active").addClass("hide") unless attributes.showIfEmpty?
@@ -110,7 +108,6 @@ angular.module("typeahead", []).directive "typeahead", ["$timeout", "$rootScope"
 				# we don't use ng-model (scope.term) here, because it might have been overwritten
 				# if the declaration is something like <typeahead ng-model="something">...
 				term = $input.val().toLowerCase()
-				scope.hasFilter = !!term
 				# Reselect LIs every time in case some have been added dynamically
 				scope.isEmpty = true
 				for liEl in $lis
