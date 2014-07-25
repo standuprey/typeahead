@@ -1,0 +1,10 @@
+{
+  "author": "Stanislas Duprey",
+  "name": "typeahead demo",
+  "dependencies": {
+    "angular": "^1.2.6",
+    "angular-sanitize": "^1.2.6",
+    "angular-touch": "^1.2.6",
+    "angular-route": "^1.2.6"
+  }
+}
